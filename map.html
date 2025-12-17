@@ -1,0 +1,33 @@
+<html>
+<body>
+<h2>Live GPS Tracking</h2>
+<div id="map" style="width: 100%; height: 600px;"></div>
+
+<script>
+let map;
+let marker;
+
+async function fetchLocation() {
+    let res = await fetch('/location');
+    let data = await res.json();
+
+    let pos = { lat: Number(data.lat), lng: Number(data.lon) };
+
+    if (!marker) {
+        map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 16,
+            center: pos
+        });
+        marker = new google.maps.Marker({ position: pos, map: map });
+    } else {
+        marker.setPosition(pos);
+        map.setCenter(pos);
+    }
+}
+
+setInterval(fetchLocation, 2000);
+</script>
+
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_KEY"></script>
+</body>
+</html>
